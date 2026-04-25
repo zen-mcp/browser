@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.2.0](https://github.com/zen-mcp/browser/compare/caf391be2633ce6a8c5a33244ac881cb7b4d3430..v0.2.0) - 2026-04-25
+#### Features
+- (**core**) ✨ implement browser agent mcp - ([caf391b](https://github.com/zen-mcp/browser/commit/caf391be2633ce6a8c5a33244ac881cb7b4d3430)) - Zen Kiet
+
+- - -
+
 ## [v0.1.0](https://github.com/zen-mcp/browser/compare/4772013e1d8d4c880df0f3ee982b8e7231198b51..v0.1.0) - 2026-04-25
 #### Features
 - (**config**) ✨ add cog.toml for versioning and changelog management - ([330dccc](https://github.com/zen-mcp/browser/commit/330dccc1e299a328d8e8cc451474a82cde059f71)) - Zen Kiet
