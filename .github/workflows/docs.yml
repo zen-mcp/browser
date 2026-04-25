@@ -1,0 +1,47 @@
+name: Docs
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: docs/yarn.lock
+
+      - name: Install dependencies and build site
+        working-directory: docs
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      - name: Publish docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/dist
+          publish_branch: gh-pages
