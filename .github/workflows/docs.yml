@@ -38,6 +38,7 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
+          touch dist/.nojekyll
 
       - name: Publish docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

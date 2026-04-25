@@ -2,10 +2,8 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// https://starlight.astro.build/guides/github/#repo-as-a-subpath-of-a-site
-// Project Pages: https://<user>.github.io/<repo>/
-const site = 'https://zenkiet.github.io';
-const base = '/browser-mcp';
+const site = 'https://zen-mcp.github.io/browser';
+const base = '/browser/';
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,13 +18,13 @@ export default defineConfig({
 				src: './src/assets/logo.svg',
 				alt: 'Zen Browser MCP',
 			},
-			favicon: './src/assets/logo.svg',
+			favicon: '/favicon.svg',
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/zen-mcp/browser' },
 				{ icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/zenkiet/' },
 			],
 			editLink: {
-				baseUrl: 'https://github.com/zen-mcp/browser/edit/main/docs/src/content/docs',
+				baseUrl: 'https://github.com/zen-mcp/browser/edit/main/docs/',
 			},
 			lastUpdated: true,
 			sidebar: [
