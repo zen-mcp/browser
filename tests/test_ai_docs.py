@@ -2,22 +2,19 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT_DIR = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
-
 
 class AIDocsValidationTestCase(unittest.TestCase):
     def test_ai_first_entrypoints_exist(self) -> None:
         required_paths = [
-            ROOT_DIR / "AGENTS.md",
+            ROOT_DIR / ".agents" / "AGENTS.md",
             ROOT_DIR / ".agents" / "ARCHITECTURE.md",
             ROOT_DIR / ".agents" / "RULES.md",
             ROOT_DIR / ".agents" / "REPO_RULES.md",
             ROOT_DIR / ".agents" / "SKILLS.md",
             ROOT_DIR / ".cursor" / "rules" / "00-project.mdc",
             ROOT_DIR / ".github" / "copilot-instructions.md",
-            ROOT_DIR / "skills" / "README.md",
         ]
 
         for path in required_paths:
@@ -63,7 +60,6 @@ class AIDocsValidationTestCase(unittest.TestCase):
             if key and value:
                 metadata[key.strip()] = value.strip()
         return metadata
-
 
 if __name__ == "__main__":
     unittest.main()
