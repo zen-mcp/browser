@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.0](https://github.com/zen-mcp/browser/compare/219f54fe057a3cbbfb7b435c3a70c8754ceaaf88..v0.4.0) - 2026-04-25
+#### Features
+- (**ci**) ✨ add release workflow - ([219f54f](https://github.com/zen-mcp/browser/commit/219f54fe057a3cbbfb7b435c3a70c8754ceaaf88)) - Zen Kiet
+
+- - -
+
 ## [v0.3.0](https://github.com/zen-mcp/browser/compare/4be3d46c29c4c1fc539c68297f714a801764cc24..v0.3.0) - 2026-04-25
 #### Features
 - (**ci**) ✨ add CI workflow - ([0409341](https://github.com/zen-mcp/browser/commit/04093413377d727c83d8706fc2ddacb4d1b5b229)) - Zen Kiet
