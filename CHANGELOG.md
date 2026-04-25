@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.3.0](https://github.com/zen-mcp/browser/compare/4be3d46c29c4c1fc539c68297f714a801764cc24..v0.3.0) - 2026-04-25
+#### Features
+- (**ci**) ✨ add CI workflow - ([0409341](https://github.com/zen-mcp/browser/commit/04093413377d727c83d8706fc2ddacb4d1b5b229)) - Zen Kiet
+- (**tests**) ✨ add unit tests for AI documentation, browser runtime, and tool contracts - ([4be3d46](https://github.com/zen-mcp/browser/commit/4be3d46c29c4c1fc539c68297f714a801764cc24)) - Zen Kiet
+
+- - -
+
 ## [v0.2.0](https://github.com/zen-mcp/browser/compare/caf391be2633ce6a8c5a33244ac881cb7b4d3430..v0.2.0) - 2026-04-25
 #### Features
 - (**core**) ✨ implement browser agent mcp - ([caf391b](https://github.com/zen-mcp/browser/commit/caf391be2633ce6a8c5a33244ac881cb7b4d3430)) - Zen Kiet
