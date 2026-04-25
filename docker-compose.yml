@@ -1,15 +1,11 @@
 services:
   browser-mcp:
-    image: ghcr.io/zen-mcp/browser:${BROWSER_MCP_TAG}
-    # build:
-    # context: .
-    # dockerfile: Dockerfile
+    image: zen-mcp/browser:${BROWSER_MCP_TAG}
     ports:
       - ${BROWSER_MCP_PORT}:8000
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL}
       - MODEL_NAME=${MODEL_NAME}
-      - DISPLAY=:0
     volumes:
       - ${DATA_PATH}/browser-mcp:/data
