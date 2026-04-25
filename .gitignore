@@ -167,6 +167,9 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# Browser MCP runtime data
+data/
+
 # mypy
 .mypy_cache/
 .dmypy.json
