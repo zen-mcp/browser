@@ -1,0 +1,14 @@
+---
+description: MCP tool contract and browser automation boundaries
+globs: "src/tools/**/*.py"
+alwaysApply: false
+---
+
+# MCP tool rules
+
+- New or updated MCP tools return a `dict` with `ok: bool`.
+- Tool descriptions should explain when to use the tool and key outputs.
+- Direct artifact reads must call `BrowserRuntime.resolve_file_path()`.
+- Artifact writes must call `BrowserRuntime.build_artifact_path()`.
+- Tool modules should not import from each other except shared lightweight
+  helpers.

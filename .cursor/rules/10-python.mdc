@@ -1,0 +1,14 @@
+---
+description: Python conventions for browser-mcp runtime and tests
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python conventions
+
+- Use Python 3.11+ compatible syntax.
+- Use async Playwright APIs in runtime and tool code.
+- Keep public helper and tool signatures typed.
+- Convert exceptions to `{ok: false, error, error_type}` only at the MCP tool
+  boundary.
+- Keep unit tests lightweight; mock heavy browser dependencies when possible.

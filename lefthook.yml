@@ -1,0 +1,4 @@
+commit-msg:
+  commands:
+    conventional-commit:
+      run: sh scripts/validate_commit_msg.sh {1}

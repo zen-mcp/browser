@@ -1,0 +1,19 @@
+---
+description: Core browser-mcp agent instructions
+alwaysApply: true
+---
+
+# browser-mcp core rules
+
+- Before code edits, apply `.agents/skills/guidelines/SKILL.md`.
+- Keep edits surgical, simple, and verified.
+- Read `AGENTS.md` first; it is the source of truth for agent work.
+- Follow `.agents/RULES.md` and `.agents/REPO_RULES.md` for safety and repo
+  gotchas.
+- Keep runtime browser code async-first and headless.
+- Preserve legacy `browse_and_act` string output; use structured sibling tools
+  for dict output.
+- Do not log or return credentials, cookies, auth headers, passwords, API keys,
+  or TOTP secrets.
+- For multi-step browser workflows, check `.agents/SKILLS.md` before inventing
+  a new procedure.
