@@ -107,6 +107,91 @@ class BrowserRuntimeTestCase(unittest.TestCase):
         self.assertEqual(result[0]["name"], "a.txt")
         self.assertEqual(result[0]["category"], "artifacts")
 
+    def test_concurrent_get_page_launches_browser_once(self) -> None:
+        class FakePage:
+            pass
+
+        class FakeContext:
+            def __init__(self) -> None:
+                self.pages = []
+                self.new_page_calls = 0
+
+            async def new_page(self):
+                self.new_page_calls += 1
+                page = FakePage()
+                self.pages.append(page)
+                return page
+
+        class FakeBrowser:
+            def __init__(self, context: FakeContext) -> None:
+                self.context = context
+                self.new_context_calls = 0
+
+            async def new_context(self, **kwargs):
+                self.new_context_calls += 1
+                return self.context
+
+        class FakeChromium:
+            def __init__(self, fake_browser: FakeBrowser) -> None:
+                self.fake_browser = fake_browser
+                self.launch_calls = 0
+
+            async def launch(self, **kwargs):
+                self.launch_calls += 1
+                return self.fake_browser
+
+        class FakePlaywright:
+            def __init__(self, chromium: FakeChromium) -> None:
+                self.chromium = chromium
+
+        class FakeStarter:
+            def __init__(self, fake_playwright: FakePlaywright) -> None:
+                self.fake_playwright = fake_playwright
+                self.start_calls = 0
+
+            async def start(self):
+                self.start_calls += 1
+                return self.fake_playwright
+
+        fake_context = FakeContext()
+        fake_browser = FakeBrowser(fake_context)
+        fake_chromium = FakeChromium(fake_browser)
+        fake_playwright = FakePlaywright(fake_chromium)
+        fake_starter = FakeStarter(fake_playwright)
+        previous_async_playwright = browser.async_playwright
+        browser.async_playwright = lambda: fake_starter
+
+        try:
+            async def run_concurrent_get_page():
+                return await asyncio.gather(
+                    self.runtime.get_page(),
+                    self.runtime.get_page(),
+                    self.runtime.get_page(),
+                )
+
+            pages = asyncio.run(run_concurrent_get_page())
+        finally:
+            browser.async_playwright = previous_async_playwright
+
+        self.assertIs(pages[0], pages[1])
+        self.assertIs(pages[1], pages[2])
+        self.assertEqual(fake_starter.start_calls, 1)
+        self.assertEqual(fake_chromium.launch_calls, 1)
+        self.assertEqual(fake_browser.new_context_calls, 1)
+        self.assertEqual(fake_context.new_page_calls, 1)
+
+    def test_prewarm_initializes_page(self) -> None:
+        class FakeContext:
+            pages = ["existing-page"]
+
+        self.runtime._playwright = object()
+        self.runtime._browser = object()
+        self.runtime._context = FakeContext()
+
+        asyncio.run(self.runtime.prewarm())
+
+        self.assertEqual(self.runtime._page, "existing-page")
+
 
 if __name__ == "__main__":
     unittest.main()

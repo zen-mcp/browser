@@ -1,3 +1,4 @@
+import asyncio
 import re
 from datetime import UTC, datetime
 from pathlib import Path
@@ -19,6 +20,7 @@ class BrowserRuntime:
         self._context: BrowserContext | None = None
         self._page: Page | None = None
         self._agent_browser: BrowserSession | None = None
+        self._page_lock = asyncio.Lock()
 
     def get_agent_browser(self) -> BrowserSession:
         if self._agent_browser is None:
@@ -41,35 +43,72 @@ class BrowserRuntime:
         if self._page is not None:
             return self._page
 
-        if self._playwright is None:
-            self._playwright = await async_playwright().start()
+        async with self._page_lock:
+            if self._page is not None:
+                return self._page
 
-        if self._browser is None:
-            self._browser = await self._playwright.chromium.launch(
-                headless=True,
-                args=[
-                    "--no-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-blink-features=AutomationControlled",
-                ],
-            )
+            if self._playwright is None:
+                self._playwright = await async_playwright().start()
 
-        if self._context is None:
-            self._context = await self._browser.new_context(
-                accept_downloads=True,
-                user_agent=(
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/122.0.0.0 Safari/537.36"
-                ),
-            )
+            if self._browser is None:
+                self._browser = await self._playwright.chromium.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-blink-features=AutomationControlled",
+                    ],
+                )
 
-        pages = self._context.pages
-        if pages:
-            self._page = pages[-1]
-        else:
-            self._page = await self._context.new_page()
-        return self._page
+            if self._context is None:
+                self._context = await self._browser.new_context(
+                    accept_downloads=True,
+                    user_agent=(
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/122.0.0.0 Safari/537.36"
+                    ),
+                )
+
+            pages = self._context.pages
+            if pages:
+                self._page = pages[-1]
+            else:
+                self._page = await self._context.new_page()
+            return self._page
+
+    async def prewarm(self) -> None:
+        await self.get_page()
+
+    async def close(self) -> None:
+        agent_browser = self._agent_browser
+        self._agent_browser = None
+        if agent_browser is not None:
+            close = getattr(agent_browser, "close", None)
+            if close is not None:
+                result = close()
+                if hasattr(result, "__await__"):
+                    await result
+
+        page = self._page
+        self._page = None
+        if page is not None:
+            await page.close()
+
+        context = self._context
+        self._context = None
+        if context is not None:
+            await context.close()
+
+        browser = self._browser
+        self._browser = None
+        if browser is not None:
+            await browser.close()
+
+        playwright = self._playwright
+        self._playwright = None
+        if playwright is not None:
+            await playwright.stop()
 
     async def list_artifacts(self) -> list[dict[str, Any]]:
         results: list[dict[str, Any]] = []

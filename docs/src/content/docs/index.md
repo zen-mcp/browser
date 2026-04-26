@@ -5,7 +5,8 @@ description: Run browser automation through MCP in an isolated Docker runtime.
 
 `browser-mcp` gives MCP clients a browser they can drive safely and repeatably.
 It runs headless Chromium with Playwright inside Docker, exposes tools over MCP
-SSE, and adds a `browser-use` agent for complex multi-step web tasks.
+Streamable HTTP, and adds a `browser-use` agent for complex multi-step web
+tasks.
 
 ## Docker first
 
@@ -24,6 +25,8 @@ OPENAI_API_KEY=your-provider-key
 OPENAI_BASE_URL=https://your-provider.example/v1
 MODEL_NAME=gpt-5.4-mini
 BROWSER_MCP_PORT=8000
+BROWSER_MCP_TRANSPORT=streamable-http
+BROWSER_PREWARM=true
 DATA_PATH=./data
 ```
 
@@ -36,6 +39,9 @@ docker compose up
 The MCP server listens on port `8000` by default. Runtime files are stored in
 `/data` inside the container and persisted on the host at
 `${DATA_PATH}/browser-mcp`.
+
+Streamable HTTP clients connect to `http://127.0.0.1:8000/mcp`. Legacy SSE
+clients can set `BROWSER_MCP_TRANSPORT=sse` and connect to `/sse`.
 
 ## Why it exists
 

@@ -86,8 +86,9 @@ def register_artifact_tools(mcp, runtime: BrowserRuntime) -> None:
 
     @mcp.tool(
         description=(
-            "Capture a PNG screenshot of the current direct Playwright page. "
-            "Use full_page for evidence bundles or selector for a focused element."
+            "Capture a PNG or JPEG screenshot of the current direct Playwright "
+            "page. Use full_page for evidence bundles or selector for a "
+            "focused element."
         )
     )
     @mcp_tool_guard
@@ -95,15 +96,30 @@ def register_artifact_tools(mcp, runtime: BrowserRuntime) -> None:
         file_name_prefix: str = "screenshot",
         full_page: bool = False,
         selector: str | None = None,
+        image_type: str = "png",
+        quality: int = 80,
     ) -> dict:
         """Capture a screenshot artifact using BrowserRuntime path helpers."""
         page = await runtime.get_page()
-        file_path = runtime.build_artifact_path(file_name_prefix, "png")
+        normalized_type = image_type.strip().lower()
+        if normalized_type not in {"png", "jpeg"}:
+            raise ValueError("image_type must be 'png' or 'jpeg'.")
+        if quality < 0 or quality > 100:
+            raise ValueError("quality must be between 0 and 100.")
+
+        screenshot_options = {
+            "path": str(runtime.build_artifact_path(file_name_prefix, normalized_type)),
+            "type": normalized_type,
+        }
+        if normalized_type == "jpeg":
+            screenshot_options["quality"] = quality
+
+        file_path = Path(screenshot_options["path"])
 
         if selector:
-            await page.locator(selector).first.screenshot(path=str(file_path))
+            await page.locator(selector).first.screenshot(**screenshot_options)
         else:
-            await page.screenshot(path=str(file_path), full_page=full_page)
+            await page.screenshot(**screenshot_options, full_page=full_page)
 
         return {
             "ok": True,
@@ -114,4 +130,6 @@ def register_artifact_tools(mcp, runtime: BrowserRuntime) -> None:
             "size_bytes": file_path.stat().st_size,
             "full_page": full_page,
             "selector": selector,
+            "image_type": normalized_type,
+            "quality": quality if normalized_type == "jpeg" else None,
         }

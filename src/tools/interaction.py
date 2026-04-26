@@ -23,14 +23,35 @@ def register_interaction_tools(mcp, runtime: BrowserRuntime) -> None:
         )
     )
     @mcp_tool_guard
-    async def type_text(selector: str, text: str, clear_first: bool = True) -> dict:
+    async def type_text(
+        selector: str,
+        text: str,
+        clear_first: bool = True,
+        slow: bool = False,
+    ) -> dict:
         """Type text into an element without echoing the text back."""
         page = await runtime.get_page()
         locator = page.locator(selector).first
-        if clear_first:
-            await locator.fill("")
-        await locator.type(text)
-        return {"ok": True, "selector": selector, "chars": len(text)}
+
+        if slow:
+            if clear_first:
+                await locator.fill("")
+            await locator.type(text)
+            mode = "type"
+        elif clear_first:
+            await locator.fill(text)
+            mode = "fill"
+        else:
+            await locator.type(text)
+            mode = "type"
+
+        return {
+            "ok": True,
+            "selector": selector,
+            "chars": len(text),
+            "mode": mode,
+            "slow": slow,
+        }
 
     @mcp.tool(
         description=(

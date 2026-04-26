@@ -14,9 +14,9 @@ These tools are registered by the current source code under `src/tools`.
 | `scroll` | Navigation | Scroll the current page up or down by pixels. | `{ ok, direction, pixels }`. |
 | `wait_for` | Navigation | Wait for a selector, visible text, or timeout. | `{ ok, mode, selector/text/seconds }`. |
 | `click` | Interaction | Click the first element matching a CSS selector. | `{ ok, selector, url }`. |
-| `type_text` | Interaction | Type text into the first input-like element matching a CSS selector. | `{ ok, selector, chars }`. |
+| `type_text` | Interaction | Fill text quickly by default, or type slowly when `slow` is true. | `{ ok, selector, chars, mode, slow }`. |
 | `press_key` | Interaction | Press a keyboard key such as `Enter`, `Tab`, or `Escape`. | `{ ok, key, url }`. |
-| `take_screenshot` | Artifacts | Capture a PNG screenshot of the full page or one selector. | `{ ok, file_name, path, url, title, size_bytes, full_page, selector }`. |
+| `take_screenshot` | Artifacts | Capture a PNG or JPEG screenshot of the full page or one selector. | `{ ok, file_name, path, url, title, size_bytes, full_page, selector, image_type, quality }`. |
 | `list_artifacts` | Artifacts | List top-level runtime artifact files in `/data`. | `{ ok, count, files }`. |
 | `get_file` | Artifacts | Read an artifact or download by safe file name and return base64 content. | `{ ok, file_name, category, mime_type, size_bytes, content_base64 }`. |
 | `get_downloaded_file` | Artifacts | Read a downloaded file by safe file name when it exists in the data directory. | `{ ok, file_name, category, mime_type, size_bytes, content_base64 }`. |
