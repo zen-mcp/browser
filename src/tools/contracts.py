@@ -15,10 +15,6 @@ def error_payload(error: BaseException) -> ToolPayload:
     }
 
 
-def legacy_error_text(error: BaseException) -> str:
-    return f"Error ({type(error).__name__}): {error}"
-
-
 def ensure_ok(payload: ToolPayload) -> ToolPayload:
     if "ok" in payload:
         return payload

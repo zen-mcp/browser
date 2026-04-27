@@ -1,4 +1,5 @@
 browser-use==0.12.6
 playwright
-mcp[server]
+mcp[server]>=1.10,<2
 python-dotenv
+uvicorn[standard]

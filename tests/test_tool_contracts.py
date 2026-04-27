@@ -11,7 +11,6 @@ if str(SRC_DIR) not in sys.path:
 from tools.contracts import (  # noqa: E402
     ensure_ok,
     error_payload,
-    legacy_error_text,
     mcp_tool_guard,
 )
 
@@ -32,12 +31,6 @@ class ToolContractsTestCase(unittest.IsolatedAsyncioTestCase):
     def test_ensure_ok_adds_default_success_flag(self) -> None:
         self.assertEqual(ensure_ok({"value": 1}), {"ok": True, "value": 1})
         self.assertEqual(ensure_ok({"ok": False}), {"ok": False})
-
-    def test_legacy_error_text_keeps_string_contract(self) -> None:
-        self.assertEqual(
-            legacy_error_text(RuntimeError("boom")),
-            "Error (RuntimeError): boom",
-        )
 
     async def test_mcp_tool_guard_returns_success_payload(self) -> None:
         @mcp_tool_guard

@@ -1,11 +1,14 @@
 from browser_use import Agent, BrowserSession, Controller
 
 from browser import BrowserRuntime
-from .contracts import error_payload, legacy_error_text
+from .contracts import error_payload
 
 
 def register_agent_tools(mcp, runtime: BrowserRuntime, llm) -> None:
     controller = Controller()
+
+    def controller_error_text(error: BaseException) -> str:
+        return f"Error ({type(error).__name__}): {error}"
 
     @controller.action(
         "Capture a PNG screenshot artifact of the current page. "
@@ -23,7 +26,7 @@ def register_agent_tools(mcp, runtime: BrowserRuntime, llm) -> None:
             )
             return f"Screenshot saved as {file_path.name} at {file_path}"
         except Exception as error:
-            return legacy_error_text(error)
+            return controller_error_text(error)
 
     async def run_browser_agent(instruction: str, url: str) -> str:
         composed_task = f"Start from {url}. Then: {instruction}"
@@ -38,26 +41,11 @@ def register_agent_tools(mcp, runtime: BrowserRuntime, llm) -> None:
 
     @mcp.tool(
         description=(
-            "Legacy string-output browser-use agent tool for complex browser "
-            "tasks. Use when clients expect a plain text final result."
-        )
-    )
-    async def browse_and_act(
-        instruction: str, url: str = "https://google.com"
-    ) -> str:
-        """Run a browser-use agent task and preserve the legacy string contract."""
-        try:
-            return await run_browser_agent(instruction, url)
-        except Exception as error:
-            return legacy_error_text(error)
-
-    @mcp.tool(
-        description=(
             "Structured browser-use agent tool for complex browser tasks. "
             "Returns ok, result, instruction, and start_url fields."
         )
     )
-    async def browse_and_act_structured(
+    async def browse_and_act(
         instruction: str, url: str = "https://google.com"
     ) -> dict:
         """Run a browser-use agent task with structured MCP output."""

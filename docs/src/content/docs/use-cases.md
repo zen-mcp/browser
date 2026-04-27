@@ -31,9 +31,9 @@ controls.
 
 ## Multi-step browser tasks
 
-Use `browse_and_act_structured` when the task is easier to describe as an
-outcome than as a list of selectors. The agent starts from the provided URL and
-uses the configured OpenAI-compatible model to complete the instruction.
+Use `browse_and_act` when the task is easier to describe as an outcome than as
+a list of selectors. The agent starts from the provided URL and uses the
+configured OpenAI-compatible model to complete the instruction.
 
 Use direct tools instead when the flow needs deterministic selector-by-selector
 control.

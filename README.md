@@ -21,8 +21,8 @@
 ## What is it?
 
 Zen Browser MCP is an MCP server that exposes a headless Chromium browser over
-HTTP/SSE. It combines direct Playwright-style tools for deterministic browser
-steps with a `browser-use` agent flow for higher-level multi-step tasks.
+Streamable HTTP. It combines direct Playwright-style tools for deterministic
+browser steps with a `browser-use` agent flow for higher-level multi-step tasks.
 
 It is built to run from Docker first, with browser artifacts written through a
 controlled `/data` volume.
@@ -53,7 +53,9 @@ OPENAI_API_KEY=your-provider-key
 OPENAI_BASE_URL=https://your-provider.example/v1
 MODEL_NAME=gpt-5.4-mini
 BROWSER_MCP_TAG=latest
+BROWSER_MCP_HOST=127.0.0.1
 BROWSER_MCP_PORT=8000
+BROWSER_PREWARM=true
 DATA_PATH=./data
 ```
 
@@ -64,8 +66,22 @@ docker compose up
 ```
 
 The compose file runs `zen-mcp/browser:${BROWSER_MCP_TAG}`, maps
-`${BROWSER_MCP_PORT}:8000`, and persists runtime files through
-`${DATA_PATH}/browser-mcp:/data`.
+`127.0.0.1:${BROWSER_MCP_PORT}:8000`, and persists runtime files through
+`${DATA_PATH}/browser-mcp:/data`. Streamable HTTP clients should connect to
+`http://127.0.0.1:${BROWSER_MCP_PORT}/mcp`.
+
+For OpenClaw:
+
+```bash
+openclaw mcp set zen-browser '{
+  "url": "http://127.0.0.1:8000/mcp",
+  "transport": "streamable-http",
+  "connectionTimeoutMs": 10000
+}'
+```
+
+If OpenClaw is running in another container on the same host, use
+`http://host.docker.internal:8000/mcp` instead of `127.0.0.1`.
 
 See the [configuration docs](https://zenkiet.github.io/browser-mcp/configuration/)
 for the full environment reference.
